@@ -51,6 +51,13 @@ namespace BullyAlgorithm
             }
         }
 
+
+        public Process()
+        {
+            status = true;
+
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(String propertyName)
         {
@@ -58,6 +65,11 @@ namespace BullyAlgorithm
             if (null != handler)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+
+            if (propertyName == "staus")
+            {
+                //do stuff
             }
         }
     }
