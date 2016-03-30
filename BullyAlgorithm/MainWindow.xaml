@@ -7,6 +7,32 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel >
+            <Button x:Name="NewProcessButton" Content="New Process" Click="NewProcessButton_Click"/>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <ListView x:Name="ProcessListView" ItemsSource="{Binding AllProcesses}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding id}" Grid.Column="0"/>
+                            <CheckBox Grid.Column="1" IsChecked="{Binding Path=status, Mode=TwoWay}"/>
+                            <Button Grid.Column="2" Content="Revive"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </Grid>
 </Window>
