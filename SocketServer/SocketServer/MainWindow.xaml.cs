@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,7 +48,7 @@ namespace SocketServer
             catch (Exception Exp)
             {
                 Debug.WriteLine(Exp.InnerException);
-                throw;
+                ;
             }
         }
 
@@ -64,7 +65,7 @@ namespace SocketServer
             catch (Exception)
             {
 
-                throw;
+                ;
             }
         }
 
@@ -82,12 +83,16 @@ namespace SocketServer
 
                 byte[] data = Encoding.ASCII.GetBytes(DateTime.Now.ToLongTimeString());
                 socket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
+
+                
                 _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
+
+                Thread.Sleep(1000);
             }
             catch (Exception)
             {
                 
-                throw;
+                ;
             }
 
         }
@@ -98,13 +103,14 @@ namespace SocketServer
         {
             try
             {
+                
                 Socket socket = (Socket)AR.AsyncState;
                 socket.EndSend(AR);
             }
-            catch (Exception)
+            catch (Exception Exp)
             {
-
-                throw;
+                Debug.WriteLine(Exp.InnerException);
+                
             }
         }
     }

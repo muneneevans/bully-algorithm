@@ -1,0 +1,27 @@
+﻿<Window x:Class="Peer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Peer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <StackPanel >
+                    <TextBlock x:Name="MyPortTextBox"/>
+                    <TextBlock Text="Port:"/>
+                    <TextBox x:Name="PortTextBox"/>
+                    <TextBlock Text="message:"/>
+                    <TextBox x:Name="MessageTextBox"/>
+                    <Button x:Name="SendButton" Click="SendButton_Click" Content="send"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
