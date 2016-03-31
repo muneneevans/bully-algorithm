@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace Peer
 {
-    class Constants
+    public class Constants
     {
         public const string Election = "election";
         public const string Check = "check";
         public const string Message = "message";
+    }
+
+    public class Container
+    {
+        public string Header;
+        public Process peer;
     }
 }

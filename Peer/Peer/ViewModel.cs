@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Peer
 {
-    class ViewModel : INotifyPropertyChanged
+    public class ViewModel : INotifyPropertyChanged
     {
         public bool isActive { get; set; }
         public bool isCoordinator { get; set; }
@@ -21,7 +21,7 @@ namespace Peer
 
         }
 
-        public void SetIp(int newport)
+        public void SetPort(int newport)
         {
             try
             {

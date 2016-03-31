@@ -13,5 +13,6 @@ namespace Peer
     /// </summary>
     public partial class App : Application
     {
+        public ViewModel vm = new ViewModel();
     }
 }
