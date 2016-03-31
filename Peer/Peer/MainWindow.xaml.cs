@@ -25,16 +25,18 @@ namespace Peer
     public partial class MainWindow : Window
     {
         private int port;
-        private string serverip = "127.0.0.1";
+        
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = ((App)Application.Current).vm;
+            
 
 
             Random r = new Random();
             
             Server s = new Server();
-            port = r.Next(100, 300);
+            port = r.Next(100, 150);
             Thread serverthread = new Thread(
                 () =>
                 {
@@ -43,31 +45,31 @@ namespace Peer
                 );
             serverthread.Start();
             MyPortTextBox.Text = port.ToString();
+            ((App)Application.Current).vm.SetPort(port);
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                using (TcpClient client = new TcpClient(serverip, Convert.ToInt32(PortTextBox.Text)))
-                {
-                    MemoryStream ms = new MemoryStream();
-                    //client.Connect(ip);
-                    NetworkStream ns = client.GetStream();
-                    var data = Serialize(MessageTextBox.Text, ms);
-                    ns.Write(data, 0, data.Length);
-                }
+                ((App)Application.Current).vm.SendData(Convert.ToInt32(PortTextBox.Text) , MessageTextBox.Text);
             }
             catch (Exception Exp)
             {                
             }
         }
 
-        public byte[] Serialize(object data, MemoryStream ms)
+        private void FindProcessesButton_Click(object sender, RoutedEventArgs e)
         {
-            BinaryFormatter fm = new BinaryFormatter();
-            fm.Serialize(ms, data);
-            return ms.ToArray();
+            try
+            {
+                ((App)Application.Current).vm.FindProcesses();
+            }
+            catch (Exception Exp)
+            {
+
+                
+            }
         }
     }
 }

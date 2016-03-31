@@ -11,6 +11,7 @@ namespace Peer
         public const string Election = "election";
         public const string Check = "check";
         public const string Message = "message";
+        public const string Me = "me";
     }
 
     public class Container

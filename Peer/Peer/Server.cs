@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,15 +10,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-
 namespace Peer
 {
     public class Server
     {
-
+        private string serverip = "127.0.0.1";
+        public int port;
         TcpListener listener;
         public void Run(int port )
         {
+            this.port = port;
             listener = new TcpListener(port);
             listener.Start();
 
@@ -58,6 +61,8 @@ namespace Peer
                 }
                 stream.Position = 0;
                 i = Deserialize<string>(stream);
+                
+                MessageBox.Show(i);
                 // TODO: do something with the result
             }
 
@@ -85,6 +90,52 @@ namespace Peer
                 }
             }
             throw new Exception("Local IP Address Not Found!");
+        }
+
+        public void SendData(int sendingport , string message)
+        {
+            try
+            {
+                using (TcpClient client = new TcpClient(serverip, sendingport))
+                {
+                    MemoryStream ms = new MemoryStream();
+                    //client.Connect(ip);
+                    NetworkStream ns = client.GetStream();
+                    var data = Serialize(message, ms);
+                    ns.Write(data, 0, data.Length);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public void FindProcesses()
+        {
+            try
+            {
+                for(int i = 100; i <+150; i++)
+                {
+                    Container c = new Container() ;
+                    c.Header = Constants.Me;
+                    c.peer = new Process() { id = port, port = port };
+                    SendData(i , JsonConvert.SerializeObject(c));
+                }
+            }
+            catch (Exception)
+            {
+
+                
+            }
+        }
+
+        public byte[] Serialize(object data, MemoryStream ms)
+        {
+            BinaryFormatter fm = new BinaryFormatter();
+            fm.Serialize(ms, data);
+            return ms.ToArray();
         }
     }
 }

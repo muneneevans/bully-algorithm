@@ -10,6 +10,7 @@ namespace Peer
 {
     public class ViewModel : INotifyPropertyChanged
     {
+        Server server = new Server();
         public bool isActive { get; set; }
         public bool isCoordinator { get; set; }
         public int port { get; set; }
@@ -29,6 +30,31 @@ namespace Peer
             }
             catch (Exception)
             {                
+            }
+        }
+        public void SendData(int sendingport ,string Message)
+        {
+            try
+            {
+                server.port = this.port;
+                server.SendData(sendingport ,Message);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public void FindProcesses()
+        {
+            try
+            {
+                server.FindProcesses();
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 

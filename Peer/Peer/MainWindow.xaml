@@ -11,6 +11,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <StackPanel >
@@ -20,8 +21,11 @@
                     <TextBlock Text="message:"/>
                     <TextBox x:Name="MessageTextBox"/>
                     <Button x:Name="SendButton" Click="SendButton_Click" Content="send"/>
+                    <Button x:Name="FindProcessesButton" Click="FindProcessesButton_Click"  Content="Find Processes"/>
                 </StackPanel>
             </Grid>
+            <Grid Grid.Column="1"></Grid>
+            <Grid Grid.Column="2"></Grid>
         </Grid>
     </Grid>
 </Window>
