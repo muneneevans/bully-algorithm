@@ -36,7 +36,7 @@ namespace Peer
             Random r = new Random();
             
             Server s = new Server();
-            port = r.Next(100, 150);
+            port = r.Next(100, 120);
             Thread serverthread = new Thread(
                 () =>
                 {

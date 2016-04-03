@@ -25,7 +25,17 @@
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1"></Grid>
-            <Grid Grid.Column="2"></Grid>
+            <Grid Grid.Column="2">
+                <ListView ItemsSource="{Binding Peers}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding port}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

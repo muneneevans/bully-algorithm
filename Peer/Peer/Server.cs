@@ -8,8 +8,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
+
 namespace Peer
 {
     public class Server
@@ -19,6 +22,9 @@ namespace Peer
         TcpListener listener;
         public void Run(int port )
         {
+            try
+            {
+
             this.port = port;
             listener = new TcpListener(port);
             listener.Start();
@@ -31,7 +37,7 @@ namespace Peer
                 {
                     try
                     {
-                        string text = ReadIncident(client);
+                        string text = ReadMessage(client);
                         MessageBox.Show(text);                        
                     }
                     catch (Exception e)
@@ -40,9 +46,14 @@ namespace Peer
                     }
                 }
             }
+
+            }
+            catch (Exception)
+            {                
+            }
         }
 
-        public string ReadIncident(TcpClient client)
+        public string ReadMessage(TcpClient client)
         {
             NetworkStream ns = client.GetStream();
             BinaryReader reader = new BinaryReader(ns);
@@ -61,8 +72,8 @@ namespace Peer
                 }
                 stream.Position = 0;
                 i = Deserialize<string>(stream);
-                
-                MessageBox.Show(i);
+
+                UnpackMessage(i);
                 // TODO: do something with the result
             }
 
@@ -70,6 +81,44 @@ namespace Peer
             return i;
         }
 
+        public void UnpackMessage(string message)
+        {
+            try
+            {
+                Container c = JsonConvert.DeserializeObject<Container>(message);
+                switch (c.Header)
+                {
+                    case Constants.Me:
+                        MessageBox.Show("Message from " + c.peer.id);
+                        System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        {
+                            
+
+                            if (!(((App)System.Windows.Application.Current).vm.ProcessExisits(c.peer)))
+                            {
+                                ((App)System.Windows.Application.Current).vm.AddProcess(c.peer);
+
+
+                                Container nc = new Container();
+                                nc.Header = Constants.Me;
+                                nc.peer = new Process() { id = port, port = port };
+                                SendData(c.peer.port, JsonConvert.SerializeObject(nc));
+                            }
+                            
+                        }));
+                        
+                        break;
+                    case Constants.Message:
+                        MessageBox.Show(c.peer.id + "has joined network");
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+
+                
+            }
+        }
 
         public T Deserialize<T>(MemoryStream ms)
         {
@@ -107,8 +156,7 @@ namespace Peer
             }
             catch (Exception)
             {
-
-                throw;
+                
             }
         }
 
@@ -116,7 +164,7 @@ namespace Peer
         {
             try
             {
-                for(int i = 100; i <+150; i++)
+                for(int i = 100; i <= 120; i++)
                 {
                     Container c = new Container() ;
                     c.Header = Constants.Me;
