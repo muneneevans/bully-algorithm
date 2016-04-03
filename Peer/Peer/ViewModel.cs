@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Peer
@@ -16,6 +17,7 @@ namespace Peer
         public bool isCoordinator { get; set; }
         public int port { get; set; }
         public int id { get; set; }
+        public Process Coordinator { get; set; }
         public ObservableCollection<Process> Peers { get; set; }
 
         public ViewModel()
@@ -26,7 +28,7 @@ namespace Peer
         public bool ProcessExisits(Process NewProcess)
         {
             var found = Peers.Where(x => x.id == NewProcess.id).ToList();
-            if (found.Count == 0 )
+            if (found.Count == 0)
             {
                 return false;
             }
@@ -40,14 +42,14 @@ namespace Peer
             try
             {
                 var found = Peers.Where(x => x.id == NewProcess.id).ToList();
-                if (found.Count == 0 )
+                if (found.Count == 0)
                 {
                     Peers.Add(NewProcess);
                 }
                 NotifyPropertyChanged("Peers");
             }
             catch (Exception)
-            {                
+            {
             }
         }
         public void SetPort(int newport)
@@ -59,10 +61,10 @@ namespace Peer
                 server.port = port;
             }
             catch (Exception)
-            {                
+            {
             }
         }
-        public void SendData(int sendingport ,string Message)
+        public void SendData(int sendingport, string Message)
         {
             try
             {
@@ -70,25 +72,27 @@ namespace Peer
                 c.Header = Constants.Message;
                 c.peer = new Process() { id = port, port = port };
                 server.port = this.port;
-                server.SendData(sendingport ,JsonConvert.SerializeObject(c));
+                server.SendData(sendingport, JsonConvert.SerializeObject(c));
             }
             catch (Exception)
             {
 
-                
+
             }
         }
         public void FindProcesses()
         {
             try
             {
+                Peers.Add(new Process() { id = port, port = port });
+                NotifyPropertyChanged("Peers");
                 server.FindProcesses();
-                StartElection();
+                
             }
             catch (Exception)
             {
 
-                
+
             }
         }
         public void StartElection()
@@ -96,9 +100,14 @@ namespace Peer
             try
             {
                 Process Highest = Peers.OrderByDescending(x => x.port).FirstOrDefault();
+                if (Highest == null)
+                {
+                                       
+                }
                 if (Highest.port == port)
                 {
-                    //send winning message
+                    server.IWon();
+                    WinnerFound(new Process() { id = port, port = port });
                 }
                 else
                 {
@@ -112,7 +121,19 @@ namespace Peer
                 }
             }
             catch (Exception)
-            {                
+            {
+            }
+        }
+        public void WinnerFound(Process WinnerProcess)
+        {
+            try
+            {
+                Coordinator = WinnerProcess;
+
+                NotifyPropertyChanged("Coordinator");
+            }
+            catch (Exception)
+            {
             }
         }
 

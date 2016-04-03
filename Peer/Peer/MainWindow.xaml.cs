@@ -71,6 +71,19 @@ namespace Peer
                 
             }
         }
+
+        private void StartElectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ((App)Application.Current).vm.StartElection();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
 

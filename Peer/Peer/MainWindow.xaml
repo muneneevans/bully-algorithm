@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:Peer"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <local:Constants x:Key="Converter"/>
+    </Window.Resources>
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -15,13 +18,16 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <StackPanel >
-                    <TextBlock x:Name="MyPortTextBox"/>
+                    <TextBlock x:Name="MyPortTextBox" Text="{Binding port}"/>
                     <TextBlock Text="Port:"/>
                     <TextBox x:Name="PortTextBox"/>
                     <TextBlock Text="message:"/>
                     <TextBox x:Name="MessageTextBox"/>
                     <Button x:Name="SendButton" Click="SendButton_Click" Content="send"/>
                     <Button x:Name="FindProcessesButton" Click="FindProcessesButton_Click"  Content="Find Processes"/>
+                    <Button x:Name="StartElectionButton" Click="StartElectionButton_Click"  Content="Start Election"/>
+                    <TextBlock Text="Coordinator:"/>
+                    
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1"></Grid>

@@ -20,36 +20,36 @@ namespace Peer
         private string serverip = "127.0.0.1";
         public int port;
         TcpListener listener;
-        public void Run(int port )
+        public void Run(int port)
         {
             try
             {
 
-            this.port = port;
-            listener = new TcpListener(port);
-            listener.Start();
+                this.port = port;
+                listener = new TcpListener(port);
+                listener.Start();
 
 
-            while (true)
-            {
-
-                using (TcpClient client = listener.AcceptTcpClient())
+                while (true)
                 {
-                    try
+
+                    using (TcpClient client = listener.AcceptTcpClient())
                     {
-                        string text = ReadMessage(client);
-                        MessageBox.Show(text);                        
-                    }
-                    catch (Exception e)
-                    {
-                        Console.Error.WriteLine(e);
+                        try
+                        {
+                            string text = ReadMessage(client);
+                            
+                        }
+                        catch (Exception e)
+                        {
+                            Console.Error.WriteLine(e);
+                        }
                     }
                 }
-            }
 
             }
             catch (Exception)
-            {                
+            {
             }
         }
 
@@ -89,11 +89,9 @@ namespace Peer
                 switch (c.Header)
                 {
                     case Constants.Me:
-                        MessageBox.Show("Message from " + c.peer.id);
+                        
                         System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
-                            
-
                             if (!(((App)System.Windows.Application.Current).vm.ProcessExisits(c.peer)))
                             {
                                 ((App)System.Windows.Application.Current).vm.AddProcess(c.peer);
@@ -104,19 +102,32 @@ namespace Peer
                                 nc.peer = new Process() { id = port, port = port };
                                 SendData(c.peer.port, JsonConvert.SerializeObject(nc));
                             }
-                            
+
                         }));
-                        
+
                         break;
                     case Constants.Message:
-                        MessageBox.Show(c.peer.id + "has joined network");
+                        
+                        break;
+                    case Constants.Election:
+                        System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        {
+                            ((App)System.Windows.Application.Current).vm.StartElection();
+                        }));
+                        break;
+                    case Constants.IWon:
+                        MessageBox.Show("The new coordinator is" + c.peer.port);
+                        System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        {
+                            ((App)System.Windows.Application.Current).vm.WinnerFound(c.peer);
+                        }));
                         break;
                 }
             }
             catch (Exception)
             {
 
-                
+
             }
         }
 
@@ -141,7 +152,7 @@ namespace Peer
             throw new Exception("Local IP Address Not Found!");
         }
 
-        public void SendData(int sendingport , string message)
+        public void SendData(int sendingport, string message)
         {
             try
             {
@@ -156,26 +167,44 @@ namespace Peer
             }
             catch (Exception)
             {
-                
+
             }
         }
 
-        public void FindProcesses()
+        public void IWon()
         {
             try
             {
-                for(int i = 100; i <= 120; i++)
+                for (int i = 100; i <= 120; i++)
                 {
-                    Container c = new Container() ;
-                    c.Header = Constants.Me;
+                    Container c = new Container();
+                    c.Header = Constants.IWon;
                     c.peer = new Process() { id = port, port = port };
-                    SendData(i , JsonConvert.SerializeObject(c));
+                    SendData(i, JsonConvert.SerializeObject(c));
                 }
             }
             catch (Exception)
             {
 
-                
+
+            }
+        }
+        public void FindProcesses()
+        {
+            try
+            {
+                for (int i = 100; i <= 120; i++)
+                {
+                    Container c = new Container();
+                    c.Header = Constants.Me;
+                    c.peer = new Process() { id = port, port = port };
+                    SendData(i, JsonConvert.SerializeObject(c));
+                }
+            }
+            catch (Exception)
+            {
+
+
             }
         }
 

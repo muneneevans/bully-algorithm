@@ -9,6 +9,7 @@ namespace Peer
     public class Constants
     {
         public const string Election = "election";
+        public const string IWon = "iwon";
         public const string Check = "check";
         public const string Message = "message";
         public const string Me = "me";
