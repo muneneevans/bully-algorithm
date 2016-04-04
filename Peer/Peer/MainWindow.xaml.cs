@@ -84,6 +84,17 @@ namespace Peer
                 throw;
             }
         }
+
+        private void CrashProcessButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ((App)Application.Current).vm.ICrashed();
+            }
+            catch (Exception)
+            {                
+            }
+        }
     }
 }
 

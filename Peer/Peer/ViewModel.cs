@@ -18,6 +18,21 @@ namespace Peer
         public int port { get; set; }
         public int id { get; set; }
         public Process Coordinator { get; set; }
+        public int Coordinatorport
+        {
+            get
+            {
+                if (Coordinator == null)
+                {
+                    return 0;
+                }
+                else {
+                    return Coordinator.port;
+                    NotifyPropertyChanged("Coordinatorport");
+                }
+            }
+            set { }
+        }
         public ObservableCollection<Process> Peers { get; set; }
 
         public ViewModel()
@@ -87,7 +102,7 @@ namespace Peer
                 Peers.Add(new Process() { id = port, port = port });
                 NotifyPropertyChanged("Peers");
                 server.FindProcesses();
-                
+
             }
             catch (Exception)
             {
@@ -102,12 +117,19 @@ namespace Peer
                 Process Highest = Peers.OrderByDescending(x => x.port).FirstOrDefault();
                 if (Highest == null)
                 {
-                                       
+
                 }
                 if (Highest.port == port)
                 {
-                    server.IWon();
                     WinnerFound(new Process() { id = port, port = port });
+
+                    foreach (Process p in Peers)
+                    {
+                        Container c = new Container();
+                        c.Header = Constants.IWon;
+                        c.peer = new Process() { id = port, port = port };
+                        server.SendData(p.port, JsonConvert.SerializeObject(c));
+                    }
                 }
                 else
                 {
@@ -122,6 +144,7 @@ namespace Peer
             }
             catch (Exception)
             {
+                FindProcesses();
             }
         }
         public void WinnerFound(Process WinnerProcess)
@@ -131,6 +154,30 @@ namespace Peer
                 Coordinator = WinnerProcess;
 
                 NotifyPropertyChanged("Coordinator");
+                NotifyPropertyChanged("Coordinatorport");
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public void ICrashed()
+        {
+            foreach (Process p in Peers)
+            {
+                Container c = new Container();
+                c.Header = Constants.Crash;
+                c.peer = new Process() { id = port, port = port };
+                server.SendData(p.port, JsonConvert.SerializeObject(c));
+            }
+        }
+        public void ProcessCrashed(Process CrashedProcess)
+        {
+            try
+            {
+                Process p = Peers.Where(x => x.port == CrashedProcess.port).FirstOrDefault();
+                Peers.Remove(p);
+                NotifyPropertyChanged("Peers");
             }
             catch (Exception)
             {

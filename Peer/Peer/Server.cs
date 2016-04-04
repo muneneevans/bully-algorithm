@@ -116,10 +116,17 @@ namespace Peer
                         }));
                         break;
                     case Constants.IWon:
-                        MessageBox.Show("The new coordinator is" + c.peer.port);
+                        //MessageBox.Show("The new coordinator is" + c.peer.port);
                         System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             ((App)System.Windows.Application.Current).vm.WinnerFound(c.peer);
+                        }));
+                        break;
+                    case Constants.Crash:
+                        System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+                        {
+                            ((App)System.Windows.Application.Current).vm.ProcessCrashed(c.peer);
+                            ((App)System.Windows.Application.Current).vm.StartElection();
                         }));
                         break;
                 }
@@ -170,25 +177,7 @@ namespace Peer
 
             }
         }
-
-        public void IWon()
-        {
-            try
-            {
-                for (int i = 100; i <= 120; i++)
-                {
-                    Container c = new Container();
-                    c.Header = Constants.IWon;
-                    c.peer = new Process() { id = port, port = port };
-                    SendData(i, JsonConvert.SerializeObject(c));
-                }
-            }
-            catch (Exception)
-            {
-
-
-            }
-        }
+        
         public void FindProcesses()
         {
             try

@@ -26,8 +26,9 @@
                     <Button x:Name="SendButton" Click="SendButton_Click" Content="send"/>
                     <Button x:Name="FindProcessesButton" Click="FindProcessesButton_Click"  Content="Find Processes"/>
                     <Button x:Name="StartElectionButton" Click="StartElectionButton_Click"  Content="Start Election"/>
+                    <Button x:Name="CrashProcessButton" Click="CrashProcessButton_Click"  Content="Crash Process"/>
                     <TextBlock Text="Coordinator:"/>
-                    
+                    <TextBlock Text="{Binding Coordinatorport}"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1"></Grid>
