@@ -38,7 +38,7 @@ namespace Peer
                         try
                         {
                             string text = ReadMessage(client);
-                            
+
                         }
                         catch (Exception e)
                         {
@@ -89,7 +89,7 @@ namespace Peer
                 switch (c.Header)
                 {
                     case Constants.Me:
-                        
+
                         System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
                         {
                             if (!(((App)System.Windows.Application.Current).vm.ProcessExisits(c.peer)))
@@ -97,17 +97,17 @@ namespace Peer
                                 ((App)System.Windows.Application.Current).vm.AddProcess(c.peer);
 
 
-                                Container nc = new Container();
-                                nc.Header = Constants.Me;
-                                nc.peer = new Process() { id = port, port = port };
-                                SendData(c.peer.port, JsonConvert.SerializeObject(nc));
+                                //Container nc = new Container();
+                                //nc.Header = Constants.Me;
+                                //nc.peer = new Process() { id = port, port = port };
+                                //SendData(c.peer.port, JsonConvert.SerializeObject(nc));
                             }
 
                         }));
 
                         break;
                     case Constants.Message:
-                        
+
                         break;
                     case Constants.Election:
                         System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
@@ -174,20 +174,30 @@ namespace Peer
             }
             catch (Exception)
             {
-
+                throw;
             }
         }
-        
+
         public void FindProcesses()
         {
             try
             {
                 for (int i = 100; i <= 120; i++)
                 {
-                    Container c = new Container();
-                    c.Header = Constants.Me;
-                    c.peer = new Process() { id = port, port = port };
-                    SendData(i, JsonConvert.SerializeObject(c));
+                    try
+                    {
+
+                        Container c = new Container();
+                        c.Header = Constants.Me;
+                        c.peer = new Process() { id = port, port = port };
+                        SendData(i, JsonConvert.SerializeObject(c));
+                        Process foundpeer = new Process() { id = i, port = i };
+                        ((App)System.Windows.Application.Current).vm.AddProcess(foundpeer);
+
+                    }
+                    catch (Exception)
+                    {                        
+                    }
                 }
             }
             catch (Exception)

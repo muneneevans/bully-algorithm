@@ -103,6 +103,11 @@ namespace Peer
                 NotifyPropertyChanged("Peers");
                 server.FindProcesses();
 
+
+
+                Thread.Sleep(12000);
+                StartElection();
+
             }
             catch (Exception)
             {

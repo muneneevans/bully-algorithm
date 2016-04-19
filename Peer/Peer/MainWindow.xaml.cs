@@ -46,6 +46,9 @@ namespace Peer
             serverthread.Start();
             MyPortTextBox.Text = port.ToString();
             ((App)Application.Current).vm.SetPort(port);
+            ((App)Application.Current).vm.FindProcesses();
+            Thread.Sleep(10500);
+            ((App)Application.Current).vm.StartElection();
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
@@ -64,6 +67,8 @@ namespace Peer
             try
             {
                 ((App)Application.Current).vm.FindProcesses();
+                Thread.Sleep(10500);
+                ((App)Application.Current).vm.StartElection();
             }
             catch (Exception Exp)
             {
